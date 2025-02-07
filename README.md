@@ -1,4 +1,4 @@
-# OBS-demo
+# My-TF-demo
 Basic terraform project template for demo. 
 It enables the creation of AWS basic cloud enviroments with mainly: VPC,Subnets,routing config, instances, security groups, etc.. using custom modules.  
 
