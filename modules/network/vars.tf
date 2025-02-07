@@ -13,7 +13,7 @@ variable "project" {
 # Regions and zones
 variable "aws_region" {
   description = "AWS region"
-  default     = "eu-central-1"
+  default     = "eu-south-2"
 }
 
 # Network variables 
