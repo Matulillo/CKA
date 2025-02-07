@@ -1,20 +1,20 @@
 provider "aws" {
-  region                   = "eu-central-1"
-  shared_credentials_files = ["C:\\Users\\NET.IBCSYSADMIN4\\Code\\Terraform\\_tools\\credentials"]
+  region                   = "eu-south-2"
+  shared_credentials_files = ["C:\\Users\\Carlos\\.aws\\credentials"]
 }
 
 terraform {
   backend "s3" {
     bucket = "obs-demo-tf-state"
     ## set the key value as the env i.e. dev, uat, stg, prd etc..
-    key    = "template"
+    key    = "carlos"
     region = "eu-central-1"
   }
 }
 
 # invoke network module
 module "demo-network" {
-  source     = "../../modules/network"
+  source     = "../modules/network"
   vpc_create = var.vpc_create
   cidr_block = var.vpc_cidr_block
   subnet_map = var.subnet_map
@@ -24,7 +24,7 @@ module "demo-network" {
 
 # invoke security group module
 module "demo-security-group" {
-  source        = "../../modules/security-group"
+  source        = "../modules/security-group"
   vpc_id        = module.demo-network.vpc_id
   ingress_rules = var.sg_rules
   name          = var.name
@@ -34,7 +34,7 @@ module "demo-security-group" {
 
 # invoke ec2 module
 module "demo-instance" {
-  source   = "../../modules/ec2"
+  source   = "../modules/ec2"
   for_each = var.instance_map
 
   ami           = each.value.ami
@@ -45,6 +45,7 @@ module "demo-instance" {
   vpc_id        = module.demo-network.vpc_id
   name          = each.key
   project       = var.project
+  key_name      = each.value.key_name
   custom_sg     = module.demo-security-group.sg_id
   depends_on    = [module.demo-security-group]
 }

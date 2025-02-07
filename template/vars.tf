@@ -11,7 +11,7 @@ variable "project" {
 # Regions and zones
 variable "aws_region" {
   description = "AWS region to deploy the resources"
-  default     = "eu-central-1"
+  default     = "eu-south-2"
 }
 
 # Network variables 
@@ -43,6 +43,7 @@ variable "instance_map" {
     subnet        = string
     private_ip    = string
     eip           = bool
+    key_name      = string
   }))
   default = {}
 }
