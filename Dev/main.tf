@@ -5,10 +5,10 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "obs-demo-tf-state"
+    bucket = "matulo-cka-tf-state"
     ## set the key value as the env i.e. dev, uat, stg, prd etc..
-    key    = "carlos"
-    region = "eu-central-1"
+    key    = "dev/terraform.tfstate"
+    region = "eu-south-2"
   }
 }
 
