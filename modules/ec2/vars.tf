@@ -65,3 +65,8 @@ variable "key_name" {
   type    = string
   default = null
 }
+
+variable "role" {
+  type    = string
+  default = null
+}

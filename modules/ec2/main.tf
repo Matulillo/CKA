@@ -16,7 +16,7 @@ resource "aws_instance" "instance" {
   subnet_id       = var.subnet_id
   private_ip      = var.private_ip != null ? var.private_ip : null
   security_groups = [aws_security_group.this_default.id, var.custom_sg]
-  user_data       = file("${path.module}/user_data.sh")
+  user_data       = var.role !=null ? file("${path.module}/user_data_${var.role}.sh") : null
   key_name        = var.key_name
   tags = merge(
     local.common_tags,

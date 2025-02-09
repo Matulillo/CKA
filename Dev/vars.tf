@@ -44,6 +44,7 @@ variable "instance_map" {
     private_ip    = string
     eip           = bool
     key_name      = string
+    role          = string
   }))
   default = {}
 }

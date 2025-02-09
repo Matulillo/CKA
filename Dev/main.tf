@@ -46,6 +46,7 @@ module "demo-instance" {
   name          = each.key
   project       = var.project
   key_name      = each.value.key_name
+  role          = each.value.role
   custom_sg     = module.demo-security-group.sg_id
   depends_on    = [module.demo-security-group]
 }
