@@ -2,7 +2,45 @@
 Basic terraform project template to deploy K8s infra. 
 It enables the creation of AWS basic cloud enviroments with mainly: VPC,Subnets,routing config, instances, security groups, etc.. using custom modules.  
 
-## Adjustments to work with kubevtl from local
+##############################################
+### Provide access to control plane from local
+##############################################
+# access to the remote control plane :
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+#1. Copy the k config from control plane to local
+ scp -i C:\Users\Carlos\.ssh\carlos.pem ec2-user@51.92.41.125:.kube/config C:\Users\Carlos\.kube\config
+
+#2. change this in local config 
+ cluster:
+    #certificate-authority-data: XXXXX
+    server: https://localhost:6443
+    insecure-skip-tls-verify: true
+  name: kubernetes
+
+#3. Make a tunnel 
+ssh -i "C:\path\to\your-key.pem" -L 6443:localhost:6443 ec2-user@51.92.41.125
+
+#4. Test the kubectl access
+C:\Users\Carlos\My Drive\Projects\CKA\TF-infra\Dev [main ≡ +1 ~1 -0 !]> k get nodes
+NAME                                         STATUS   ROLES           AGE   VERSION
+ip-10-10-10-10.eu-south-2.compute.internal   Ready    control-plane   51m   v1.28.15
+ip-10-10-10-11.eu-south-2.compute.internal   Ready    <none>          44m   v1.28.15
+C:\Users\Carlos\My Drive\Projects\CKA\TF-infra\Dev [main ≡ +1 ~1 -0 !]> k get pods -n kube-system
+NAME                                                                 READY   STATUS    RESTARTS   AGE
+coredns-5dd5756b68-jjbff                                             1/1     Running   0          54m
+coredns-5dd5756b68-nxqsv                                             1/1     Running   0          54m
+etcd-ip-10-10-10-10.eu-south-2.compute.internal                      1/1     Running   0          55m
+kube-apiserver-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          55m
+kube-controller-manager-ip-10-10-10-10.eu-south-2.compute.internal   1/1     Running   0          55m
+kube-proxy-vxtr9                                                     1/1     Running   0          48m
+kube-proxy-wfkt4                                                     1/1     Running   0          54m
+kube-scheduler-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          55m
+
+## Adjustments to work with kubectl from control plane itself 
 [root@ip-10-10-10-10 ec2-user]#  export KUBECONFIG=/etc/kubernetes/admin.conf
 [root@ip-10-10-10-10 ec2-user]# kubectl config view
 apiVersion: v1
@@ -39,35 +77,3 @@ kube-proxy-dx2ct                                                     1/1     Run
 kube-proxy-qsbhl                                                     1/1     Running   0          15m
 kube-scheduler-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          15m
 
-##############################################
-### Provide access to control plane from local
-##############################################
-
-#1. Copy the k config from control plane to local
- scp -i C:\Users\Carlos\.ssh\carlos.pem ec2-user@51.92.41.125:.kube/config C:\Users\Carlos\.kube\config
-
-#2. change this in local config 
- cluster:
-    #certificate-authority-data: XXXXX
-    server: https://localhost:6443
-    insecure-skip-tls-verify: true
-  name: kubernetes
-
-#3. Make a tunnel 
-ssh -i "C:\path\to\your-key.pem" -L 6443:localhost:6443 ec2-user@51.92.41.125
-
-#4. Test the kubectl access
-C:\Users\Carlos\My Drive\Projects\CKA\TF-infra\Dev [main ≡ +1 ~1 -0 !]> k get nodes
-NAME                                         STATUS   ROLES           AGE   VERSION
-ip-10-10-10-10.eu-south-2.compute.internal   Ready    control-plane   51m   v1.28.15
-ip-10-10-10-11.eu-south-2.compute.internal   Ready    <none>          44m   v1.28.15
-C:\Users\Carlos\My Drive\Projects\CKA\TF-infra\Dev [main ≡ +1 ~1 -0 !]> k get pods -n kube-system
-NAME                                                                 READY   STATUS    RESTARTS   AGE
-coredns-5dd5756b68-jjbff                                             1/1     Running   0          54m
-coredns-5dd5756b68-nxqsv                                             1/1     Running   0          54m
-etcd-ip-10-10-10-10.eu-south-2.compute.internal                      1/1     Running   0          55m
-kube-apiserver-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          55m
-kube-controller-manager-ip-10-10-10-10.eu-south-2.compute.internal   1/1     Running   0          55m
-kube-proxy-vxtr9                                                     1/1     Running   0          48m
-kube-proxy-wfkt4                                                     1/1     Running   0          54m
-kube-scheduler-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          55m
