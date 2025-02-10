@@ -43,7 +43,6 @@ instance_map = {
     key_name      = "carlos"
     role          = "master"
   }
-  
   "worker-1" = {
     ami           = "amazon"
     instance_type = "t3.micro"
@@ -119,6 +118,14 @@ sg_rules = [
     protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
     desc        = "Flannel VXLAN"
+  }
+  ,
+  {
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    desc        = "Nodeport"
   }
 ]
 
