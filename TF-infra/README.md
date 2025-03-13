@@ -77,3 +77,25 @@ kube-proxy-dx2ct                                                     1/1     Run
 kube-proxy-qsbhl                                                     1/1     Running   0          15m
 kube-scheduler-ip-10-10-10-10.eu-south-2.compute.internal            1/1     Running   0          15m
 
+## add nodes to the cluster
+From control plane srv check the log /tmp/kubeadm-init.log and find the last lines something like :
+
+Your Kubernetes control-plane has initialized successfully!
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.10.10.10:6443 --token fe90kj.wlvp2pzmyfdlprht \
+        --discovery-token-ca-cert-hash sha256:2f416eb1680ee540b0ff66e6ab71463ebce1e6dbb0a46aabc0007093b8801719
